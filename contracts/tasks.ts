@@ -360,3 +360,24 @@ task("warpMessenger:getBlockchainID", "Gets the blockchain ID").setAction(
     console.log(result);
   }
 );
+
+task("warpMessenger:sendWarpMessage", "Sends a warp message")
+  .addParam("destinationchainid", "the ID of the destination chain")
+  .addParam(
+    "destinationaddress",
+    "the address to send the message to on the destination chain"
+  )
+  .addParam("message", "the message to send")
+  .setAction(async (args, hre) => {
+    const warp = await hre.ethers.getContractAt(
+      "WarpMessenger",
+      WARP_MESSENGER_ADDRESS
+    );
+    const result = await warp.sendWarpMessage(
+      args.destinationchainid,
+      args.destinationaddress,
+      // Encode the message as bytes
+      hre.ethers.utils.toUtf8Bytes(args.message)
+    );
+    console.log(result);
+  });
