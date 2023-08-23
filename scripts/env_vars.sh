@@ -3,7 +3,7 @@
 # This script sets up the environment variables needed to use this repository
 # It is meant to be sourced
 
-TERRAFORM_DIR="ansible-avalanche-getting-started/terraform/multipass"
+TERRAFORM_DIR=${TERRAFORM_DIR:-ansible-avalanche-getting-started/terraform/multipass}
 
 # Avalanche endpoint
 AVALANCHE_ENDPOINT="$(terraform -chdir=$TERRAFORM_DIR output -json validators_ips | jq -r '.[0]'):9650"

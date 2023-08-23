@@ -19,7 +19,7 @@ To try out Avalanche Warp Navigator you need to have the following software inst
 - [Multipass](https://multipass.run/) (see [Install Multipass](https://multipass.run/install))
 - [Terraform](https://www.terraform.io/) (see [Install Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli))
 - [jq](https://stedolan.github.io/jq/) (see [Download jq](https://stedolan.github.io/jq/download/))
-- [Ash CLI](https://github.com/AshAvalanche/ash-rs/tree/main/crates/ash_cli) in version [`0.2.3-alpha`](https://github.com/AshAvalanche/ash-rs/releases/tag/v0.2.3-alpha) (see [Ash CLI Installation](https://ash.center/docs/toolkit/ash-cli/installation))
+- [Ash CLI](https://github.com/AshAvalanche/ash-rs/tree/main/crates/ash_cli) in version [`0.3.0-alpha`](https://github.com/AshAvalanche/ash-rs/releases/tag/v0.3.0-alpha) (see [Ash CLI Installation](https://ash.center/docs/toolkit/ash-cli/installation))
 
 ## Useful information
 
@@ -46,12 +46,6 @@ Run `scripts/local_network.sh` to bootstrap a local Avalanche test network with 
 ```bash
 cd avalanche-warp-navigator
 ./scripts/local_network.sh
-```
-
-Source `scripts/env_vars.sh` to populate useful environment variables to interact with the local network:
-
-```bash
-source scripts/env_vars.sh
 ```
 
 Run `scripts/explorer.sh` to deploy a Blockscout explorer:
@@ -99,6 +93,9 @@ npx hardhat warpMessenger:sendWarpMessage \
 Use the `avalanche warp navigate` command of the Ash CLI to monitor Warp messages:
 
 ```bash
+# Set the Ash environment variables
+export ASH_CONFIG=conf/local.yml
+export AVALANCHE_NETWORK=local
 # Get all the Warp messages sent from the 'HolyTerra' chain betwwen block 0 and the latest block
 ash avalanche warp navigate HolyTerra --from-block 0 --to-block latest
 ```

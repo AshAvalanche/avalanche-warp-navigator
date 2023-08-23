@@ -1,0 +1,10 @@
+      - id: ${WARP_SUBNET_ID}
+        blockchains:
+          - id: ${HOLYTERRA_CHAIN_ID}
+            name: HolyTerra
+            vmType: SubnetEVM
+            rpcUrl: http://${AVALANCHE_ENDPOINT}/ext/bc/${HOLYTERRA_CHAIN_ID}/rpc
+          - id: ${FENRIS_CHAIN_ID}
+            name: Fenris
+            vmType: SubnetEVM
+            rpcUrl: http://${AVALANCHE_ENDPOINT}/ext/bc/${FENRIS_CHAIN_ID}/rpc

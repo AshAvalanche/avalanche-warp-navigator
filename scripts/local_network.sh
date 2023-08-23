@@ -32,9 +32,20 @@ else
   ansible-playbook ash.avalanche.create_subnet -i inventories/local
 fi
 
+TERRAFORM_DIR=terraform/multipass source ../scripts/env_vars.sh
+
+# Update config files with the new Subnet ID and blockchain ID
+sed -e "s/avalanchego_track_subnets: \[.*\]/avalanchego_track_subnets: [$WARP_SUBNET_ID]/" inventories/local/group_vars/avalanche_nodes.yml -i
+sed -e "s/avalanchego_chains_configs: { \".*\"/avalanchego_chains_configs: { \"$HOLYTERRA_CHAIN_ID\"/" inventories/local/group_vars/avalanche_nodes.yml -i
+
 # Add the Subnet to the list of tracked Subnets
 echo "Adding the Subnet to the list of tracked Subnets"
-custom_subnets=$(multipass exec validator01 -- ash avalanche subnet list --json | jq 'map(select(.id != "11111111111111111111111111111111LpoYY"))')
-subnet_id=$(echo "$custom_subnets" | jq -r '.[0].id')
-sed -e "s/avalanchego_track_subnets: \[.*\]/avalanchego_track_subnets: [$subnet_id]/" inventories/local/group_vars/avalanche_nodes.yml -i
 ansible-playbook ash.avalanche.provision_nodes -i inventories/local
+
+cd - || exit
+
+# Template the Ash CLI config file
+echo "Templating the Ash CLI config file"
+mkdir -p conf
+cat ansible-avalanche-getting-started/terraform/multipass/local-test-network.yml >conf/local.yml
+envsubst <scripts/warp-conf.txt >>conf/local.yml

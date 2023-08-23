@@ -7,7 +7,7 @@ if [ ! -d "ansible-avalanche-getting-started" ]; then
   echo "This script has to be run after scripts/local_network.sh"
 fi
 
-source scripts/env_vars.sh
+source ./scripts/env_vars.sh
 
 cd ansible-avalanche-getting-started || exit
 # Install dependencies
