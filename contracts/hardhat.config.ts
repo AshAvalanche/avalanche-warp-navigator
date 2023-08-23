@@ -1,31 +1,23 @@
-import "@nomiclabs/hardhat-waffle"
-import "@nomiclabs/hardhat-ethers"
-import "./tasks"
+import "@nomiclabs/hardhat-waffle";
+import "@nomiclabs/hardhat-ethers";
+import "./tasks";
 
 // HardHat users must populate these environment variables in order to connect to their subnet-evm instance
 // Since the blockchainID is not known in advance, there's no good default to use and we use the C-Chain here.
-var local_rpc_uri = process.env.RPC_URI || "http://127.0.0.1:9650/ext/bc/C/rpc"
-var local_chain_id = parseInt(process.env.CHAIN_ID, 10) || 99999
+var local_rpc_uri = process.env.RPC_URI || "http://127.0.0.1:9650/ext/bc/C/rpc";
+var local_chain_id = parseInt(process.env.CHAIN_ID, 10) || 99999;
+
+var avalanche_private_key =
+  process.env.AVALANCHE_PRIVATE_KEY ||
+  "0x56289e99c94b6912bfc12adc093c9b51124f0dc54ac7a766b2bc5ccf558d8027";
 
 export default {
   solidity: {
     compilers: [
       {
-        version: "0.5.16"
+        version: "0.8.0",
       },
-      {
-        version: "0.6.2"
-      },
-      {
-        version: "0.6.4"
-      },
-      {
-        version: "0.7.0"
-      },
-      {
-        version: "0.8.0"
-      },
-    ]
+    ],
   },
   networks: {
     local: {
@@ -43,9 +35,14 @@ export default {
         "0xbbc2865b76ba28016bc2255c7504d000e046ae01934b04c694592a6276988630",
         "0xcdbfd34f687ced8c6968854f8a99ae47712c4f4183b78dcc4a903d1bfe8cbf60",
         "0x86f78c5416151fe3546dece84fda4b4b1e36089f2dbc48496faf3a950f16157c",
-        "0x750839e9dbbd2a0910efe40f50b2f3b2f2f59f5580bb4b83bd8c1201cf9a010a"
+        "0x750839e9dbbd2a0910efe40f50b2f3b2f2f59f5580bb4b83bd8c1201cf9a010a",
       ],
-      pollingInterval: "1s"
+      pollingInterval: "1s",
     },
-  }
-}
+    holyTerra: {
+      url: "https://validator01.ash-test.center/ext/bc/qgchaJrK1YzWZTYbQ4MCcoKUAgga1qU38odx7XA78iae8yQhr/rpc",
+      chainId: 66666,
+      accounts: [avalanche_private_key],
+    },
+  },
+};

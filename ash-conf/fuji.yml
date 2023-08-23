@@ -1,0 +1,25 @@
+avalancheNetworks:
+  - name: fuji
+    subnets:
+      - id: 11111111111111111111111111111111LpoYY
+        subnetType: PrimaryNetwork
+        blockchains:
+          - id: 11111111111111111111111111111111LpoYY
+            name: P-Chain
+            vmID: 11111111111111111111111111111111LpoYY
+            vmType: PlatformVM
+            rpcUrl: https://validator01.ash-test.center/ext/bc/P
+          - name: X-Chain
+            vmID: jvYyfQTxGMJLuGWa55kdP2p2zSUYsQ5Raupu4TW34ZAUBAbtq
+            vmType: AvalancheVM
+            rpcUrl: https://validator01.ash-test.center/ext/bc/X
+      - id: 27FCSEqR5nE9pu255fqrJZZQDNt5Cg4P2B86ifD97KRunhMgic
+        blockchains:
+          - id: qgchaJrK1YzWZTYbQ4MCcoKUAgga1qU38odx7XA78iae8yQhr
+            name: HolyTerra
+            vmType: SubnetEVM
+            rpcUrl: https://validator01.ash-test.center/ext/bc/qgchaJrK1YzWZTYbQ4MCcoKUAgga1qU38odx7XA78iae8yQhr/rpc
+          - id: 2VDAzBtDc2Rgzfm3dfu9bjFrJX2b95zcKwBcN426x3wDTz8JeG
+            name: Fenris
+            vmType: SubnetEVM
+            rpcUrl: https://validator01.ash-test.center/ext/bc/2VDAzBtDc2Rgzfm3dfu9bjFrJX2b95zcKwBcN426x3wDTz8JeG/rpc

@@ -46,6 +46,6 @@ cd - || exit
 
 # Template the Ash CLI config file
 echo "Templating the Ash CLI config file"
-mkdir -p conf
-cat ansible-avalanche-getting-started/terraform/multipass/local-test-network.yml >conf/local.yml
-envsubst <scripts/warp-conf.txt >>conf/local.yml
+mkdir -p ash-conf
+cat ansible-avalanche-getting-started/terraform/multipass/local-test-network.yml >ash-conf/local.yml
+envsubst <scripts/warp-conf.txt >>ash-conf/local.yml
