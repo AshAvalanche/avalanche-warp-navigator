@@ -20,15 +20,16 @@ The repository contains all the resources required to:
 - [Use Avalanche Warp Navigator on HolyTerra (Fuji)](#use-avalanche-warp-navigator-on-holyterra-fuji)
   - [Prerequisites](#prerequisites)
   - [Warpspace Subnet information](#warpspace-subnet-information)
+  - [Setup](#setup)
   - [Create a wallet and airdrop PSYCHIC tokens](#create-a-wallet-and-airdrop-psychic-tokens)
   - [Send Warp messages from HolyTerra](#send-warp-messages-from-holyterra)
   - [Monitor/decode Warp messages from HolyTerra](#monitordecode-warp-messages-from-holyterra)
+- [Avalanche Warp Messages format](#avalanche-warp-messages-format)
 - [Use Avalanche Warp Navigator locally](#use-avalanche-warp-navigator-locally)
   - [Prerequisites](#prerequisites-1)
   - [Local environment architecture](#local-environment-architecture)
   - [Environment setup](#environment-setup)
   - [Interact with Avalanche Warp Messaging](#interact-with-avalanche-warp-messaging)
-- [Avalanche Warp Messages format](#avalanche-warp-messages-format)
 - [Repository content](#repository-content)
 
 ## Use Avalanche Warp Navigator on HolyTerra (Fuji)
@@ -72,6 +73,14 @@ The `HolyTerra` chain has been provided with:
 - A [Blockscout](https://www.blockscout.com/) explorer avaiable at https://explorer.holyterra.ash-test.center
 - A Faucet available at https://faucet.holyterra.ash-test.center
 
+### Setup
+
+```bash
+# Clone the repo
+git clone https://github.com/AshAvalanche/avalanche-warp-navigator.git --recurse-submodules
+cd avalanche-warp-navigator
+```
+
 ### Create a wallet and airdrop PSYCHIC tokens
 
 Before sending Warp messages, you need a wallet with PSYCHIC energy (=tokens) on the `HolyTerra` chain:
@@ -108,11 +117,8 @@ ash avalanche wallet info -e hex
 To send Warp messages, we interacting directly with the `WarpMessenger` stateful precompile using [Hardhat](https://hardhat.org/) tasks on the `holyTerra` network:
 
 ```bash
-# Clone the repo
-git clone https://github.com/AshAvalanche/avalanche-warp-navigator.git --recurse-submodules
-
-cd avalanche-warp-navigator/contracts
 # Install dependencies
+cd contracts
 npm install
 
 # Get the bytes32 blockchain ID of the Subnet as seen by WarpMessenger
@@ -144,6 +150,23 @@ ash avalanche warp navigate HolyTerra --from-block 4 --to-block 4
 Here is your message with its decoded payloads! :tada:
 
 To learn more about the Warp message format, see [Avalanche Warp messages format](#avalanche-warp-messages-format).
+
+## Avalanche Warp Messages format
+
+Let's explain the different parts of a Warp message with the example of the message sent from `HolyTerra` to `Fenris`:
+
+![avalanche warp navigate](img/avalanche-warp-navigate.png)
+
+- `Status`: the message status. It can be `Sent` or `Signed by X validators`. This is computed by the Ash CLI by querying each validator for its signature of the message.
+  > **Note:** the Ash CLI might not be able to query the validators on Fuji. In this case, the status will be `Sent` even if the message has technically been signed by the validators.
+- `Unsigned message` ([UnsignedMessage](https://github.com/ava-labs/avalanchego/blob/master/vms/platformvm/warp/unsigned_message.go#L14)): all the bytes of the message except the signature and the ID
+  - `ID`: the ID of the message. It is actually a SHA256 hash of the unsigned message.
+  - `NetworkID`: the ID of the Avalanche network the message is sent from (e.g. `5` for Fuji)
+  - `SourceChainID`: the CB58 ID of the chain the message is sent from (e.g. `qgchaJrK1YzWZTYbQ4MCcoKUAgga1qU38odx7XA78iae8yQhr` for `HolyTerra`)
+  - `Payload`: the message payload as arbitrary bytes. In our case, it is an [AddressedPayload](https://github.com/ava-labs/subnet-evm/blob/master/warp/payload/payload.go#L14) of the Subnet-EVM.
+- `Verified message`: the message as it will be consumed on a destination chain. In our case it is the Subnet-EVM [WarpMessage](https://github.com/ava-labs/subnet-evm/blob/c56d42d51da4d5423aa192d99e33a85c2b82747d/x/warp/contract.go#L57) that will be outputed by the `getVerifiedMessage` precompile function.
+
+For more information of how messages are generated, signed and reveived, see [subnet-evm Avalanche Warp Messaging README](https://github.com/ava-labs/subnet-evm/blob/master/x/warp/README.md).
 
 ## Use Avalanche Warp Navigator locally
 
@@ -208,23 +231,6 @@ See [Sending Warp messages from HolyTerra](#sending-warp-messages-from-holyterra
    export AVALANCHE_NETWORK=local
    ```
 2. See [Monitor/decode Warp messages from HolyTerra](#monitordecode-warp-messages-from-holyterra) for instructions on how to monitor/decode Warp messages from the `HolyTerra` chain.
-
-## Avalanche Warp Messages format
-
-Let's explain the different parts of a Warp message with the example of the message sent from `HolyTerra` to `Fenris`:
-
-![avalanche warp navigate](img/avalanche-warp-navigate.png)
-
-- `Status`: the message status. It can be `Sent` or `Signed by X validators`. This is computed by the Ash CLI by querying each validator for its signature of the message.
-  > **Note:** the Ash CLI might not be able to query the validators on Fuji. In this case, the status will be `Sent` even if the message has technically been signed by the validators.
-- `Unsigned message` ([UnsignedMessage](https://github.com/ava-labs/avalanchego/blob/master/vms/platformvm/warp/unsigned_message.go#L14)): all the bytes of the message except the signature and the ID
-  - `ID`: the ID of the message. It is actually a SHA256 hash of the unsigned message.
-  - `NetworkID`: the ID of the Avalanche network the message is sent from (e.g. `5` for Fuji)
-  - `SourceChainID`: the CB58 ID of the chain the message is sent from (e.g. `qgchaJrK1YzWZTYbQ4MCcoKUAgga1qU38odx7XA78iae8yQhr` for `HolyTerra`)
-  - `Payload`: the message payload as arbitrary bytes. In our case, it is an [AddressedPayload](https://github.com/ava-labs/subnet-evm/blob/master/warp/payload/payload.go#L14) of the Subnet-EVM.
-- `Verified message`: the message as it will be consumed on a destination chain. In our case it is the Subnet-EVM [WarpMessage](https://github.com/ava-labs/subnet-evm/blob/c56d42d51da4d5423aa192d99e33a85c2b82747d/x/warp/contract.go#L57) that will be outputed by the `getVerifiedMessage` precompile function.
-
-For more information of how messages are generated, signed and reveived, see [subnet-evm Avalanche Warp Messaging README](https://github.com/ava-labs/subnet-evm/blob/master/x/warp/README.md).
 
 ## Repository content
 
