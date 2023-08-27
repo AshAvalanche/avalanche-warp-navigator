@@ -139,6 +139,9 @@ npx hardhat warpMessenger:sendWarpMessage \
 Now that we have sent a message, we can use `avalanche warp navigate` to decode it!
 
 ```bash
+# Go back to the root of the repo
+cd ..
+
 # Get all the Warp messages sent from the 'HolyTerra' chain since block 0
 ash avalanche warp navigate HolyTerra
 
